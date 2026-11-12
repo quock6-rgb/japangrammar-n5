@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JapanGrammar — Học Ngữ Pháp, Từ Vựng & Giao Tiếp Tiếng Nhật</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/wanakana"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-cream: #FCFBF7;
+      --sakura-red: #E63946;
+      --sakura-dark: #C82333;
+      --ink-slate: #1D3557;
+      --soft-sand: #F4F1EA;
+    }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: var(--bg-cream);
+      color: #1F2937;
+    }
+    .jp-font {
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .tab-active {
+      background-color: var(--sakura-red);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
+    }
+    .pill-active {
+      background-color: var(--ink-slate);
+      color: #FFFFFF;
+    }
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-stone-200 sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-[#E63946] text-white flex items-center justify-center font-bold text-xl jp-font shadow-sm">
+          文
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-[#1D3557] tracking-tight">JapanGrammar <span class="text-[#E63946]"></span></h1>
+          <p class="text-xs text-stone-500">Ngữ pháp • Từ vựng • Trắc nghiệm Random • Bộ gõ Hiragana/Katakana</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex flex-wrap gap-1.5 bg-stone-100 p-1 rounded-xl">
+        <button onclick="switchTab('grammar')" id="tab-grammar" class="tab-btn tab-active px-3.5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer">
+          📘 Grammar (Công thức)
+        </button>
+        <button onclick="switchTab('vocab')" id="tab-vocab" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-semibold text-stone-600 hover:text-stone-900 transition-all cursor-pointer">
+          🗂️ Từ vựng
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-semibold text-stone-600 hover:text-stone-900 transition-all cursor-pointer">
+          🎯 Trắc nghiệm
+        </button>
+        <button onclick="switchTab('ime')" id="tab-ime" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-semibold text-stone-600 hover:text-stone-900 transition-all cursor-pointer">
+          ⌨️ Bộ gõ Luyện tập
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+
+    <!-- ==================== TAB 1: GRAMMAR ==================== -->
+    <section id="section-grammar" class="space-y-6">
+      <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row gap-3">
+          <div class="relative flex-1">
+            <input
+              type="text"
+              id="grammar-search"
+              oninput="renderGrammar()"
+              placeholder="Tìm công thức, trợ từ, cách hỏi giá, tầng, gọi món, dị ứng..."
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-[#E63946] text-sm"
+            />
+            <span class="absolute left-3.5 top-2.5 text-stone-400">🔍</span>
+          </div>
+          <div class="text-xs text-stone-500 flex items-center gap-2 px-2">
+            <span>🔊 Nhấn nút loa để nghe phát âm tiếng Nhật chuẩn</span>
+          </div>
+        </div>
+        <div id="grammar-pills" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <div id="grammar-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- ==================== TAB 2: VOCABULARY ==================== -->
+    <section id="section-vocab" class="hidden space-y-6">
+      <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="text-base font-bold text-[#1D3557]">Kho Từ Vựng & Giao Tiếp Thực Tế</h2>
+            <p class="text-xs text-stone-500">Học qua thẻ Flashcard lật 3D hoặc tra cứu theo chủ đề</p>
+          </div>
+
+          <div class="flex items-center gap-2 bg-stone-100 p-1 rounded-xl">
+            <button onclick="setVocabMode('flashcard')" id="btn-mode-flashcard" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1D3557] text-white transition cursor-pointer">
+              🃏 Thẻ Flashcard
+            </button>
+            <button onclick="setVocabMode('list')" id="btn-mode-list" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 transition cursor-pointer">
+              📋 Danh sách
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-medium">
+            <span class="text-stone-600">Tiến độ ghi nhớ của bạn</span>
+            <span id="vocab-progress-text" class="text-[#E63946] font-bold">0 / 36 từ (0%)</span>
+          </div>
+          <div class="w-full h-2.5 bg-stone-100 rounded-full overflow-hidden">
+            <div id="vocab-progress-bar" class="h-full bg-[#E63946] transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-3 justify-between">
+          <div id="vocab-pills" class="flex flex-wrap gap-2"></div>
+          <input
+            type="text"
+            id="vocab-search"
+            oninput="renderVocab()"
+            placeholder="Tìm từ vựng..."
+            class="px-3.5 py-1.5 rounded-xl border border-stone-200 focus:outline-none focus:border-[#E63946] text-xs w-full md:w-56"
+          />
+        </div>
+      </div>
+
+      <!-- Flashcard View -->
+      <div id="vocab-flashcard-view" class="max-w-xl mx-auto space-y-4">
+        <div class="perspective-1000 h-72 cursor-pointer" onclick="flipCard()">
+          <div id="flashcard-inner" class="relative w-full h-full transform-style-3d">
+            <!-- Front -->
+            <div class="absolute inset-0 backface-hidden bg-white rounded-3xl border-2 border-stone-200 shadow-md p-6 flex flex-col items-center justify-between">
+              <div class="w-full flex justify-between items-center">
+                <span id="fc-category" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-[#E63946]">Chủ đề</span>
+                <button onclick="event.stopPropagation(); speakCurrentVocab()" class="w-9 h-9 rounded-full bg-stone-100 hover:bg-red-50 text-[#E63946] flex items-center justify-center transition cursor-pointer" title="Nghe phát âm">
+                  🔊
+                </button>
+              </div>
+              <div class="text-center space-y-2">
+                <div id="fc-kanji" class="text-4xl font-bold text-[#1D3557] jp-font">豚肉</div>
+                <div id="fc-kana" class="text-lg text-stone-500 jp-font">ぶたにく</div>
+              </div>
+              <p class="text-xs text-stone-400">👆 Nhấn vào thẻ để lật xem nghĩa & ví dụ</p>
+            </div>
+
+            <!-- Back -->
+            <div class="absolute inset-0 backface-hidden rotate-y-180 bg-[#1D3557] text-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-between">
+              <div class="w-full flex justify-between items-center">
+                <span id="fc-romaji" class="text-xs font-mono bg-white/15 px-2.5 py-1 rounded-full">butaniku</span>
+                <button onclick="event.stopPropagation(); speakCurrentExample()" class="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-xs flex items-center gap-1 transition cursor-pointer">
+                  🔊 Nghe ví dụ
+                </button>
+              </div>
+              <div class="text-center space-y-3">
+                <div id="fc-meaning" class="text-2xl font-bold text-amber-300">Thịt heo / Thịt lợn</div>
+                <div class="bg-white/10 rounded-xl p-3 text-sm space-y-1">
+                  <div id="fc-ex-jp" class="jp-font font-medium">豚肉が入っていますか。</div>
+                  <div id="fc-ex-vi" class="text-xs text-stone-300">Có thịt heo ở trong không?</div>
+                </div>
+              </div>
+              <p class="text-xs text-stone-300">👆 Nhấn để quay lại mặt trước</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3">
+          <button onclick="prevCard()" class="px-4 py-2.5 rounded-xl bg-white border border-stone-200 hover:bg-stone-50 text-sm font-semibold text-stone-700 transition cursor-pointer">
+            ← Trước
+          </button>
+
+          <button id="btn-mark-learned" onclick="toggleLearnedCurrent()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow-sm transition cursor-pointer">
+            ✓ Đánh dấu đã thuộc
+          </button>
+
+          <button onclick="nextCard()" class="px-4 py-2.5 rounded-xl bg-white border border-stone-200 hover:bg-stone-50 text-sm font-semibold text-stone-700 transition cursor-pointer">
+            Tiếp →
+          </button>
+        </div>
+        <div id="fc-counter" class="text-center text-xs text-stone-500 font-medium">Thẻ 1 / 36</div>
+      </div>
+
+      <!-- List View -->
+      <div id="vocab-list-view" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+    <!-- ==================== TAB 3: DYNAMIC RANDOM QUIZ ==================== -->
+    <section id="section-quiz" class="hidden max-w-2xl mx-auto space-y-5">
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-5">
+        <!-- Mode & Shuffle Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-stone-50 p-3 rounded-xl border border-stone-200">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button onclick="setQuizMode('all')" id="qmode-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1D3557] text-white transition cursor-pointer">
+              🎲 Tổng hợp (100+ câu)
+            </button>
+            <button onclick="setQuizMode('grammar')" id="qmode-grammar" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 hover:bg-stone-200 transition cursor-pointer">
+              📘 Ngữ pháp & Giao tiếp
+            </button>
+            <button onclick="setQuizMode('vocab')" id="qmode-vocab" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 hover:bg-stone-200 transition cursor-pointer">
+              🗂️ Kiểm tra Từ vựng
+            </button>
+          </div>
+          <button onclick="generateNewQuizSet()" class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-[#E63946] text-xs font-bold transition cursor-pointer">
+            🔀 Trộn bộ đề mới
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+          <div>
+            <span id="quiz-progress" class="text-xs font-bold uppercase tracking-wider text-[#E63946]">Câu hỏi 1 / 15</span>
+            <h2 class="text-lg font-bold text-[#1D3557]">Luyện Phản Xạ Ngẫu Nhiên</h2>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-center bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
+              <div class="text-[10px] text-amber-700 font-semibold">CHUỖI ĐÚNG</div>
+              <div id="quiz-streak" class="text-base font-bold text-amber-600">🔥 0</div>
+            </div>
+            <div class="text-center bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200">
+              <div class="text-[10px] text-blue-700 font-semibold">ĐIỂM SỐ</div>
+              <div id="quiz-score" class="text-base font-bold text-[#1D3557]">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="quiz-body" class="space-y-4">
+          <div class="bg-[#F4F1EA] p-4 rounded-xl space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-500 font-medium" id="quiz-context">Tình huống</span>
+              <button id="btn-speak-quiz" onclick="speakQuizPrompt()" class="hidden text-xs px-2.5 py-1 rounded-lg bg-white border border-stone-200 text-[#E63946] font-semibold hover:bg-red-50 cursor-pointer">
+                🔊 Nghe từ
+              </button>
+            </div>
+            <div class="text-xl font-bold text-[#1D3557] jp-font" id="quiz-question">...</div>
+            <div class="text-sm text-stone-600" id="quiz-hint">...</div>
+          </div>
+
+          <div id="quiz-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+
+          <div id="quiz-feedback" class="hidden p-4 rounded-xl text-sm space-y-2"></div>
+
+          <div class="flex justify-end pt-2">
+            <button id="btn-next-quiz" onclick="nextQuiz()" class="hidden px-5 py-2.5 rounded-xl bg-[#E63946] hover:bg-[#C82333] text-white text-sm font-semibold transition cursor-pointer">
+              Câu tiếp theo →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: IME TYPING PRACTICE ==================== -->
+    <section id="section-ime" class="hidden max-w-3xl mx-auto space-y-5">
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-4">
+          <div>
+            <h2 class="text-lg font-bold text-[#1D3557]">Bộ Gõ Romaji → Hiragana / Katakana</h2>
+            <p class="text-xs text-stone-500">Gõ phiên âm Romaji (ví dụ: <code class="bg-stone-100 px-1 rounded">sumimasen, ikura desuka</code>) để tự động chuyển chữ Nhật</p>
+          </div>
+          <div class="flex items-center gap-1.5 bg-stone-100 p-1 rounded-xl">
+            <button onclick="setImeMode('hiragana')" id="ime-hira" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#E63946] text-white transition cursor-pointer">
+              あ Hiragana
+            </button>
+            <button onclick="setImeMode('katakana')" id="ime-kata" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 transition cursor-pointer">
+              ア Katakana
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-[#F4F1EA] p-4 rounded-xl space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-bold text-[#1D3557]">📝 Chọn câu mẫu giao tiếp để luyện gõ theo:</label>
+            <select id="ime-sample-select" onchange="updateImeSample()" class="text-xs bg-white border border-stone-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#E63946]"></select>
+          </div>
+          <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-stone-200">
+            <div>
+              <div id="sample-jp" class="text-lg font-bold text-[#1D3557] jp-font"></div>
+              <div id="sample-romaji" class="text-xs font-mono text-[#E63946]"></div>
+              <div id="sample-vi" class="text-xs text-stone-500"></div>
+            </div>
+            <button onclick="speakText(document.getElementById('sample-jp').textContent)" class="px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-[#E63946] text-xs font-semibold transition cursor-pointer">
+              🔊 Nghe mẫu
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <textarea
+            id="ime-input"
+            rows="3"
+            placeholder="Nhập Romaji tại đây (ví dụ: kono ryouri ni butaniku ga haitte imasuka)..."
+            class="w-full p-4 rounded-xl border-2 border-stone-200 focus:outline-none focus:border-[#E63946] text-xl jp-font"
+          ></textarea>
+
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex gap-2">
+              <button onclick="speakImeInput()" class="px-4 py-2 rounded-xl bg-[#1D3557] hover:bg-slate-800 text-white text-xs font-semibold transition cursor-pointer">
+                🔊 Đọc câu vừa gõ
+              </button>
+              <button onclick="copyImeInput()" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold transition cursor-pointer">
+                📋 Sao chép
+              </button>
+            </div>
+            <button onclick="clearImeInput()" class="px-4 py-2 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer">
+              🗑️ Xóa nội dung
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-stone-200 bg-white py-4 text-center text-xs text-stone-500">
+    JapanGrammar • Ứng dụng học Ngữ pháp, Từ vựng & Giao tiếp tiếng Nhật thực tế
+  </footer>
+
+  <script>
+    // ==================== DATA: GRAMMAR (18 CÔNG THỨC) ====================
+    const grammarData = [
+      {
+        category: "Giới thiệu bản thân",
+        title: "Hỏi tên lịch sự",
+        formula: "お名前は 何ですか。(Onamae wa nan desuka?)",
+        meaning: "Tên bạn là gì? / Quý danh của anh/chị là gì?",
+        note: "Thêm tiền tố lịch sự 「お」 trước 「名前 (tên)」. Khi trả lời chỉ cần nói: [Tên] です。",
+        examples: [
+          { jp: "お名前は 何ですか。", romaji: "Onamae wa nan desuka?", vi: "Tên của bạn là gì?" },
+          { jp: "私は ナム です。よろしくお願いします。", romaji: "Watashi wa Namu desu. Yoroshiku onegaishimasu.", vi: "Tôi là Nam. Rất mong được giúp đỡ." }
+        ]
+      },
+      {
+        category: "Giới thiệu bản thân",
+        title: "Hỏi tuổi tác",
+        formula: "おいくつですか。 / 何歳ですか。",
+        meaning: "Bạn bao nhiêu tuổi?",
+        note: "「おいくつですか」 lịch sự hơn 「何歳 (なんさい) ですか」, dùng được cho cả người lớn tuổi.",
+        examples: [
+          { jp: "今、おいくつですか。", romaji: "Ima, oikutsu desuka?", vi: "Bây giờ bạn bao nhiêu tuổi?" },
+          { jp: "二十歳（はたち）です。", romaji: "Hatachi desu.", vi: "Tôi 20 tuổi (trường hợp đặc biệt)." }
+        ]
+      },
+      {
+        category: "Giới thiệu bản thân",
+        title: "Hỏi quê quán & Nghề nghiệp",
+        formula: "どちらから 来ましたか。 / お仕事は 何ですか。",
+        meaning: "Bạn đến từ đâu? / Công việc của bạn là gì?",
+        note: "「どちら」 là cách hỏi lịch sự của 「どこ (ở đâu)」.",
+        examples: [
+          { jp: "どちらから 来ましたか。― ベトナムから 来ました。", romaji: "Dochira kara kimashitaka? - Betonamu kara kimashita.", vi: "Bạn đến từ đâu? - Tôi đến từ Việt Nam." },
+          { jp: "お仕事は 何ですか。― エンジニアです。", romaji: "Oshigoto wa nan desuka? - Enjinia desu.", vi: "Công việc của bạn là gì? - Tôi là kỹ sư." }
+        ]
+      },
+      {
+        category: "Thời gian & Ngày tháng",
+        title: "Hỏi giờ giấc hiện tại",
+        formula: "今、何時（なんじ）ですか。",
+        meaning: "Bây giờ là mấy giờ?",
+        note: "Trả lời bằng: [Số giờ] 時（じ） [Số phút] 分（ふん/ぷん）です。Lưu ý 4 giờ là よじ, 9 giờ là くじ.",
+        examples: [
+          { jp: "今、何時ですか。― 午前 9時 15分です。", romaji: "Ima, nanji desuka? - Gozen kuji juugofun desu.", vi: "Bây giờ mấy giờ? - 9 giờ 15 phút sáng." },
+          { jp: "会議は 何時から 何時までですか。", romaji: "Kaigi wa nanji kara nanji made desuka?", vi: "Cuộc họp từ mấy giờ đến mấy giờ?" }
+        ]
+      },
+      {
+        category: "Thời gian & Ngày tháng",
+        title: "Hỏi thứ trong tuần",
+        formula: "今日は 何曜日（なんようび）ですか。",
+        meaning: "Hôm nay là thứ mấy?",
+        note: "Các thứ: 月 (Hai), 火 (Ba), 水 (Tư), 木 (Năm), 金 (Sáu), 土 (Bảy), 日 (Chủ nhật) + 曜日.",
+        examples: [
+          { jp: "今日は 何曜日ですか。― 金曜日です。", romaji: "Kyou wa nanyoubi desuka? - Kinyoubi desu.", vi: "Hôm nay thứ mấy? - Thứ Sáu." },
+          { jp: "休みは 何曜日ですか。", romaji: "Yasumi wa nanyoubi desuka?", vi: "Ngày nghỉ là thứ mấy?" }
+        ]
+      },
+      {
+        category: "Thời gian & Ngày tháng",
+        title: "Hỏi ngày tháng năm & Sinh nhật",
+        formula: "何年（なんねん） 何月（なんがつ） 何日（なんにち）ですか。",
+        meaning: "Năm nào, tháng mấy, ngày bao nhiêu?",
+        note: "Trật tự thời gian tiếng Nhật đi từ lớn đến nhỏ: Năm → Tháng → Ngày.",
+        examples: [
+          { jp: "お誕生日は いつですか。― 9月 9日（ここのか）です。", romaji: "Otanjoubi wa itsu desuka? - Kugatsu kokonoka desu.", vi: "Sinh nhật bạn khi nào? - Ngày 9 tháng 9." },
+          { jp: "今日は 何月 何日ですか。", romaji: "Kyou wa nangatsu nannichi desuka?", vi: "Hôm nay là ngày mấy tháng mấy?" }
+        ]
+      },
+      {
+        category: "Địa điểm & Tầng lầu",
+        title: "Hỏi vị trí địa điểm",
+        formula: "[Địa điểm] は どこ（どちら）ですか。",
+        meaning: "[Địa điểm] ở đâu vậy?",
+        note: "Dùng 「どちら」 khi hỏi đường hoặc hỏi trong trung tâm thương mại, công ty cho lịch sự.",
+        examples: [
+          { jp: "すみません、トイレは どこですか。", romaji: "Sumimasen, toire wa doko desuka?", vi: "Xin lỗi, nhà vệ sinh ở đâu vậy?" },
+          { jp: "エレベーターは あちらです。", romaji: "Erebeetaa wa achira desu.", vi: "Thang máy ở đằng kia ạ." }
+        ]
+      },
+      {
+        category: "Địa điểm & Tầng lầu",
+        title: "Hỏi tầng mấy trong tòa nhà",
+        formula: "[Địa điểm] は 何階（なんがい）ですか。",
+        meaning: "[Địa điểm] ở tầng mấy?",
+        note: "Lưu ý biến âm: 1階 (いっかい), 3階 (さんがい), 6階 (ろっかい), 8階 (はっかい), 何階 (なんがい).",
+        examples: [
+          { jp: "レストランは 何階ですか。― 3階（さんがい）です。", romaji: "Resutoran wa nangai desuka? - Sangai desu.", vi: "Nhà hàng ở tầng mấy? - Ở tầng 3 ạ." },
+          { jp: "靴売り場は 地下 1階（ちかいっかい）です。", romaji: "Kutsu uriba wa chika ikkai desu.", vi: "Quầy bán giày ở tầng hầm B1." }
+        ]
+      },
+      {
+        category: "Giá cả & Số lượng",
+        title: "Hỏi giá tiền",
+        formula: "これは いくらですか。",
+        meaning: "Cái này bao nhiêu tiền?",
+        note: "Đơn vị tiền Nhật là 円（えん - Yên）. Có thể thay 「これ」 bằng tên món đồ: 「このラーメンは いくらですか」.",
+        examples: [
+          { jp: "すみません、これは いくらですか。", romaji: "Sumimasen, kore wa ikura desuka?", vi: "Xin lỗi, cái này giá bao nhiêu tiền?" },
+          { jp: "全部で 1,500円（せんごひゃくえん）です。", romaji: "Zenbu de sen gohyaku en desu.", vi: "Tổng cộng là 1,500 Yên ạ." }
+        ]
+      },
+      {
+        category: "Giá cả & Số lượng",
+        title: "Hỏi số lượng chung",
+        formula: "[Danh từ] は いくつ ありますか。",
+        meaning: "Có bao nhiêu cái [Danh từ]?",
+        note: "Dùng bộ đếm chung từ 1 đến 10: ひとつ (1), ふたつ (2), みっつ (3), よっつ (4), いつつ (5)...",
+        examples: [
+          { jp: "りんごを いくつ 買いましたか。― みっつ 買いました。", romaji: "Ringo o ikutsu kaimashitaka? - Mittsu kaimashita.", vi: "Bạn đã mua mấy quả táo? - Tôi đã mua 3 quả." }
+        ]
+      },
+      {
+        category: "Ăn uống & Order",
+        title: "Gọi món ăn / Đồ uống (Order)",
+        formula: "[Món ăn] を ください。 / [Món ăn] を [Số lượng] お願いします。",
+        meaning: "Cho tôi món [Món ăn] / Làm ơn cho tôi [Số lượng] phần [Món ăn].",
+        note: "Nối nhiều món bằng trợ từ 「と」. Dùng 「お願いします」 sẽ tự nhiên và lịch sự hơn trong nhà hàng.",
+        examples: [
+          { jp: "ラーメンと 餃子（ぎょうざ）を ください。", romaji: "Raamen to gyouza o kudasai.", vi: "Cho tôi mì Ramen và bánh xếp Gyoza." },
+          { jp: "生ビールを ふたつ お願いします。", romaji: "Namabiiru o futatsu onegaishimasu.", vi: "Làm ơn cho tôi 2 ly bia tươi." }
+        ]
+      },
+      {
+        category: "Ăn uống & Order",
+        title: "Hỏi thành phần món ăn & Dị ứng",
+        formula: "この料理に [Nguyên liệu] が 入っていますか。",
+        meaning: "Món ăn này có chứa/có [Nguyên liệu] ở trong không?",
+        note: "Rất hữu ích khi kiêng thịt heo (豚肉), hải sản, đậu phộng (ピーナッツ) hoặc đồ cay (辛いもの).",
+        examples: [
+          { jp: "すみません、この料理に 豚肉が 入っていますか。", romaji: "Sumimasen, kono ryouri ni butaniku ga haitte imasuka?", vi: "Xin lỗi, món này có thịt heo ở trong không?" },
+          { jp: "アレルギーが あります。卵（たまご）は 入っていますか。", romaji: "Arerugii ga arimasu. Tamago wa haitte imasuka?", vi: "Tôi bị dị ứng. Trong món có trứng không ạ?" }
+        ]
+      },
+      {
+        category: "Ăn uống & Order",
+        title: "Yêu cầu bỏ bớt nguyên liệu",
+        formula: "[Nguyên liệu] を 抜きにしてください。 / [Nguyên liệu] なしで お願いします。",
+        meaning: "Làm ơn bỏ [Nguyên liệu] ra giúp tôi / Không lấy [Nguyên liệu].",
+        note: "Dùng khi không ăn được hành lá (ねぎ), rau mùi (パクチー), đá lạnh (氷)...",
+        examples: [
+          { jp: "ねぎを 抜きにしてください。", romaji: "Negi o nuki ni shite kudasai.", vi: "Làm ơn không bỏ hành lá giúp tôi." },
+          { jp: "氷（こおり）なしで お願いします。", romaji: "Koori nashi de onegaishimasu.", vi: "Làm ơn cho đồ uống không đá ạ." }
+        ]
+      },
+      {
+        category: "Ăn uống & Order",
+        title: "Hỏi món gợi ý & Tính tiền",
+        formula: "おすすめは 何ですか。 / お会計（かいけい）を お願いします。",
+        meaning: "Món đặc trưng của quán là gì? / Làm ơn tính tiền giúp tôi.",
+        note: "Khi muốn trả tiền riêng từng người, nói thêm: 「別々（べつべつ）で お願いします」.",
+        examples: [
+          { jp: "この店の おすすめは 何ですか。", romaji: "Kono mise no osusume wa nan desuka?", vi: "Món ngon đặc trưng của quán này là gì?" },
+          { jp: "すみません、お会計を お願いします。", romaji: "Sumimasen, okaikei o onegaishimasu.", vi: "Xin lỗi, làm ơn tính tiền giúp tôi." }
+        ]
+      },
+      {
+        category: "Trợ từ & Cấu trúc",
+        title: "Câu khẳng định & Phủ định cơ bản",
+        formula: "N1 は N2 です。 / N1 は N2 ではありません。",
+        meaning: "N1 là N2 / N1 không phải là N2.",
+        note: "Trợ từ 「は」 đọc là 「wa」, đánh dấu chủ đề của câu.",
+        examples: [
+          { jp: "私は 学生です。会社員ではありません。", romaji: "Watashi wa gakusei desu. Kaishain dewa arimasen.", vi: "Tôi là sinh viên. Không phải nhân viên công ty." }
+        ]
+      },
+      {
+        category: "Trợ từ & Cấu trúc",
+        title: "Tác động hành động lên tân ngữ",
+        formula: "Danh từ を Động từ-ます。",
+        meaning: "Làm hành động gì lên danh từ.",
+        note: "Trợ từ 「を」 (đọc là 「o」) đứng sau đối tượng chịu tác động trực tiếp của động từ.",
+        examples: [
+          { jp: "毎朝 コーヒーを 飲みます。", romaji: "Maiasa koohii o nomimasu.", vi: "Mỗi sáng tôi đều uống cà phê." }
+        ]
+      },
+      {
+        category: "Trợ từ & Cấu trúc",
+        title: "Phương hướng di chuyển & Nơi diễn ra hành động",
+        formula: "[Địa điểm] へ/に 行きます。 / [Địa điểm] で V-ます。",
+        meaning: "Đi đến [Địa điểm] / Làm hành động V tại [Địa điểm].",
+        note: "Phân biệt: 「へ/に」 chỉ hướng di chuyển đến; 「で」 chỉ địa điểm diễn ra hành động.",
+        examples: [
+          { jp: "明日 東京へ 行きます。", romaji: "Ashita Toukyou e ikimasu.", vi: "Ngày mai tôi sẽ đi Tokyo." },
+          { jp: "レストランで 昼ごはんを 食べます。", romaji: "Resutoran de hirugohan o tabemasu.", vi: "Tôi ăn cơm trưa ở nhà hàng." }
+        ]
+      },
+      {
+        category: "Trợ từ & Cấu trúc",
+        title: "Chỉ sự tồn tại (Có đồ vật / Có người)",
+        formula: "[Vật] が あります。 / [Người/Động vật] が います。",
+        meaning: "Có [Vật] / Có [Người hoặc Động vật].",
+        note: "「あります」 dùng cho vật vô tri; 「います」 dùng cho người và động vật.",
+        examples: [
+          { jp: "駅の 近くに コンビニが あります。", romaji: "Eki no chikaku ni konbini ga arimasu.", vi: "Ở gần nhà ga có cửa hàng tiện lợi." }
+        ]
+      }
+    ];
+
+    // ==================== DATA: VOCABULARY (36 TỪ VỰNG) ====================
+    const vocabData = [
+      { id: 1, category: "Ăn uống & Nguyên liệu", kanji: "豚肉", kana: "ぶたにく", romaji: "butaniku", meaning: "Thịt heo / Thịt lợn", exJp: "この料理に豚肉が入っていますか。", exVi: "Món này có thịt heo không?" },
+      { id: 2, category: "Ăn uống & Nguyên liệu", kanji: "牛肉", kana: "ぎゅうにく", romaji: "gyuuniku", meaning: "Thịt bò", exJp: "牛肉のラーメンをください。", exVi: "Cho tôi một tô mì bò." },
+      { id: 3, category: "Ăn uống & Nguyên liệu", kanji: "鶏肉", kana: "とりにく", romaji: "toriniku", meaning: "Thịt gà", exJp: "鶏肉が好きです。", exVi: "Tôi thích thịt gà." },
+      { id: 4, category: "Ăn uống & Nguyên liệu", kanji: "海老", kana: "えび", romaji: "ebi", meaning: "Con tôm", exJp: "海老アレルギーがあります。", exVi: "Tôi bị dị ứng tôm." },
+      { id: 5, category: "Ăn uống & Nguyên liệu", kanji: "卵", kana: "たまご", romaji: "tamago", meaning: "Trứng", exJp: "卵をふたつお願いします。", exVi: "Làm ơn cho 2 quả trứng." },
+      { id: 6, category: "Ăn uống & Nguyên liệu", kanji: "ねぎ", kana: "ねぎ", romaji: "negi", meaning: "Hành lá", exJp: "ねぎを抜きにしてください。", exVi: "Làm ơn đừng bỏ hành lá." },
+      { id: 7, category: "Ăn uống & Nguyên liệu", kanji: "辛い", kana: "からい", romaji: "karai", meaning: "Cay", exJp: "このカレーは辛いですか。", exVi: "Món cà ri này có cay không?" },
+      { id: 8, category: "Ăn uống & Nguyên liệu", kanji: "お会計", kana: "おかいけい", romaji: "okaikei", meaning: "Tính tiền / Thanh toán", exJp: "すみません、お会計をお願いします。", exVi: "Xin lỗi, làm ơn tính tiền giúp tôi." },
+      { id: 9, category: "Ăn uống & Nguyên liệu", kanji: "おすすめ", kana: "おすすめ", romaji: "osusume", meaning: "Món gợi ý / Đặc trưng", exJp: "おすすめは何ですか。", exVi: "Món đặc trưng của quán là gì?" },
+      { id: 10, category: "Ăn uống & Nguyên liệu", kanji: "お水", kana: "おみず", romaji: "omizu", meaning: "Nước lọc", exJp: "お水をください。", exVi: "Cho tôi xin nước lọc." },
+
+      { id: 11, category: "Thời gian & Ngày tháng", kanji: "今", kana: "いま", romaji: "ima", meaning: "Bây giờ", exJp: "今、何時ですか。", exVi: "Bây giờ là mấy giờ?" },
+      { id: 12, category: "Thời gian & Ngày tháng", kanji: "今日", kana: "きょう", romaji: "kyou", meaning: "Hôm nay", exJp: "今日は金曜日です。", exVi: "Hôm nay là thứ Sáu." },
+      { id: 13, category: "Thời gian & Ngày tháng", kanji: "明日", kana: "あした", romaji: "ashita", meaning: "Ngày mai", exJp: "明日、学校へ行きます。", exVi: "Ngày mai tôi đi đến trường." },
+      { id: 14, category: "Thời gian & Ngày tháng", kanji: "昨日", kana: "きのう", romaji: "kinou", meaning: "Hôm qua", exJp: "昨日は休みでした。", exVi: "Hôm qua là ngày nghỉ." },
+      { id: 15, category: "Thời gian & Ngày tháng", kanji: "毎日", kana: "まいにち", romaji: "mainichi", meaning: "Mỗi ngày / Hằng ngày", exJp: "毎日日本語を勉強します。", exVi: "Mỗi ngày tôi đều học tiếng Nhật." },
+      { id: 16, category: "Thời gian & Ngày tháng", kanji: "誕生日", kana: "たんじょうび", romaji: "tanjoubi", meaning: "Ngày sinh nhật", exJp: "お誕生日はいつですか。", exVi: "Sinh nhật của bạn khi nào?" },
+
+      { id: 17, category: "Địa điểm & Tầng lầu", kanji: "駅", kana: "えき", romaji: "eki", meaning: "Nhà ga", exJp: "駅はどこですか。", exVi: "Nhà ga ở đâu vậy?" },
+      { id: 18, category: "Địa điểm & Tầng lầu", kanji: "お手洗い", kana: "おてあらい", romaji: "otearai", meaning: "Nhà vệ sinh (lịch sự)", exJp: "お手洗いは2階です。", exVi: "Nhà vệ sinh ở tầng 2." },
+      { id: 19, category: "Địa điểm & Tầng lầu", kanji: "地下", kana: "ちか", romaji: "chika", meaning: "Tầng hầm", exJp: "スーパーは地下1階です。", exVi: "Siêu thị ở tầng hầm B1." },
+      { id: 20, category: "Địa điểm & Tầng lầu", kanji: "受付", kana: "うけつけ", romaji: "uketsuke", meaning: "Quầy lễ tân", exJp: "受付はあちらです。", exVi: "Quầy lễ tân ở đằng kia." },
+      { id: 21, category: "Địa điểm & Tầng lầu", kanji: "近く", kana: "ちかく", romaji: "chikaku", meaning: "Ở gần", exJp: "会社の近くにカフェがあります。", exVi: "Ở gần công ty có quán cà phê." },
+      { id: 22, category: "Địa điểm & Tầng lầu", kanji: "病院", kana: "びょういん", romaji: "byouin", meaning: "Bệnh viện", exJp: "病院へ行きます。", exVi: "Tôi đi đến bệnh viện." },
+
+      { id: 23, category: "Giá cả & Mua sắm", kanji: "いくら", kana: "いくら", romaji: "ikura", meaning: "Bao nhiêu tiền", exJp: "この靴はいくらですか。", exVi: "Đôi giày này bao nhiêu tiền?" },
+      { id: 24, category: "Giá cả & Mua sắm", kanji: "高い", kana: "たかい", romaji: "takai", meaning: "Đắt / Cao", exJp: "ちょっと高いですね。", exVi: "Hơi đắt nhỉ." },
+      { id: 25, category: "Giá cả & Mua sắm", kanji: "安い", kana: "やすい", romaji: "yasui", meaning: "Rẻ", exJp: "この店は安くて美味しいです。", exVi: "Quán này vừa rẻ vừa ngon." },
+      { id: 26, category: "Giá cả & Mua sắm", kanji: "全部で", kana: "ぜんぶで", romaji: "zenbu de", meaning: "Tổng cộng là", exJp: "全部で2,000円です。", exVi: "Tổng cộng là 2,000 Yên." },
+      { id: 27, category: "Giá cả & Mua sắm", kanji: "クレジットカード", kana: "クレジットカード", romaji: "kurejitto kaado", meaning: "Thẻ tín dụng", exJp: "クレジットカードは使えますか。", exVi: "Có dùng được thẻ tín dụng không?" },
+      { id: 28, category: "Giá cả & Mua sắm", kanji: "現金", kana: "げんきん", romaji: "genkin", meaning: "Tiền mặt", exJp: "現金で払います。", exVi: "Tôi trả bằng tiền mặt." },
+
+      { id: 29, category: "Giới thiệu & Con người", kanji: "会社員", kana: "かいしゃいん", romaji: "kaishain", meaning: "Nhân viên công ty", exJp: "兄は会社員です。", exVi: "Anh trai tôi là nhân viên công ty." },
+      { id: 30, category: "Giới thiệu & Con người", kanji: "留学生", kana: "りゅうがくせい", romaji: "ryuugakusei", meaning: "Du học sinh", exJp: "私はベトナムからの留学生です。", exVi: "Tôi là du học sinh đến từ Việt Nam." },
+      { id: 31, category: "Giới thiệu & Con người", kanji: "先生", kana: "せんせい", romaji: "sensei", meaning: "Giáo viên", exJp: "田中先生は優しいです。", exVi: "Thầy Tanaka rất hiền." },
+      { id: 32, category: "Giới thiệu & Con người", kanji: "名前", kana: "なまえ", romaji: "namae", meaning: "Tên", exJp: "お名前は何ですか。", exVi: "Tên bạn là gì?" },
+
+      { id: 33, category: "Động từ cốt lõi", kanji: "食べます", kana: "たべます", romaji: "tabemasu", meaning: "Ăn", exJp: "朝ごはんを食べます。", exVi: "Tôi ăn bữa sáng." },
+      { id: 34, category: "Động từ cốt lõi", kanji: "飲みます", kana: "のみます", romaji: "nomimasu", meaning: "Uống", exJp: "お茶を飲みます。", exVi: "Tôi uống trà." },
+      { id: 35, category: "Động từ cốt lõi", kanji: "買います", kana: "かいます", romaji: "kaimasu", meaning: "Mua", exJp: "駅で新聞を買います。", exVi: "Tôi mua báo ở nhà ga." },
+      { id: 36, category: "Động từ cốt lõi", kanji: "行きます", kana: "いきます", romaji: "ikimasu", meaning: "Đi", exJp: "来月日本へ行きます。", exVi: "Tháng sau tôi sẽ đi Nhật." }
+    ];
+
+    // ==================== DATA: BASE GRAMMAR QUIZ BANK (25 CÂU) ====================
+    const baseGrammarQuiz = [
+      {
+        type: "grammar",
+        context: "Tại nhà hàng — Hỏi thành phần dị ứng",
+        question: "すみません、この料理（　）豚肉が 入っていますか。",
+        hint: "Xin lỗi, trong món ăn này có chứa thịt heo không?",
+        options: ["に", "を", "で", "へ"],
+        correctText: "に",
+        explanation: "Dùng trợ từ 「に」 trong cấu trúc 「[Món ăn] に [Nguyên liệu] が 入っていますか」 để hỏi thành phần bên trong món ăn."
+      },
+      {
+        type: "grammar",
+        context: "Tại nhà hàng — Gọi món ăn",
+        question: "ラーメンと 餃子（　）ください。",
+        hint: "Cho tôi mì Ramen và bánh xếp Gyoza.",
+        options: ["が", "を", "に", "は"],
+        correctText: "を",
+        explanation: "Cấu trúc gọi món chuẩn: 「[Tên món] を ください」."
+      },
+      {
+        type: "grammar",
+        context: "Tại quán cà phê — Yêu cầu bỏ nguyên liệu",
+        question: "すみません、氷（こおり）（　）で お願いします。",
+        hint: "Xin lỗi, làm ơn cho tôi đồ uống không đá.",
+        options: ["あり", "なし", "いり", "すき"],
+        correctText: "なし",
+        explanation: "「[Nguyên liệu] なしで お願いします」 nghĩa là làm ơn không cho [Nguyên liệu] vào."
+      },
+      {
+        type: "grammar",
+        context: "Tại cửa hàng — Hỏi giá tiền",
+        question: "すみません、この りんごは（　）ですか。― 300円です。",
+        hint: "Xin lỗi, quả táo này bao nhiêu tiền? - 300 Yên.",
+        options: ["いくつ", "いくら", "なんじ", "どこ"],
+        correctText: "いくら",
+        explanation: "「いくら」 dùng để hỏi giá tiền; 「いくつ」 dùng để hỏi số lượng cái hoặc tuổi tác."
+      },
+      {
+        type: "grammar",
+        context: "Tại trung tâm thương mại — Hỏi tầng lầu",
+        question: "レストランは（　）ですか。― 3階（さんがい）です。",
+        hint: "Nhà hàng ở tầng mấy? - Ở tầng 3 ạ.",
+        options: ["なんじ", "なんがい", "なんにち", "なんようび"],
+        correctText: "なんがい",
+        explanation: "「何階（なんがい）」 dùng để hỏi tầng mấy trong tòa nhà."
+      },
+      {
+        type: "grammar",
+        context: "Giao tiếp hằng ngày — Hỏi giờ",
+        question: "今、（　）ですか。― 10時 30分です。",
+        hint: "Bây giờ là mấy giờ? - 10 giờ 30 phút.",
+        options: ["なんじ", "なんがつ", "なんさい", "いくら"],
+        correctText: "なんじ",
+        explanation: "「何時（なんじ）」 dùng để hỏi giờ giấc."
+      },
+      {
+        type: "grammar",
+        context: "Giao tiếp hằng ngày — Hỏi thứ trong tuần",
+        question: "今日は（　）ですか。― 水曜日（すいようび）です。",
+        hint: "Hôm nay là thứ mấy? - Thứ Tư.",
+        options: ["なんにち", "なんようび", "なんがつ", "いつ"],
+        correctText: "なんようび",
+        explanation: "「何曜日（なんようび）」 dùng để hỏi thứ trong tuần."
+      },
+      {
+        type: "grammar",
+        context: "Giao tiếp lịch sự — Hỏi tuổi",
+        question: "失礼ですが、（　）ですか。― 25歳です。",
+        hint: "Xin thất lễ, bạn bao nhiêu tuổi? - Tôi 25 tuổi.",
+        options: ["おいくつ", "おいくら", "おなまえ", "どちら"],
+        correctText: "おいくつ",
+        explanation: "「おいくつですか」 là cách hỏi tuổi lịch sự."
+      },
+      {
+        type: "grammar",
+        context: "Hỏi đường — Tìm vị trí",
+        question: "すみません、駅は（　）ですか。",
+        hint: "Xin lỗi, nhà ga ở đâu vậy?",
+        options: ["いつ", "どこ", "だれ", "なに"],
+        correctText: "どこ",
+        explanation: "「どこ」 nghĩa là 'ở đâu', dùng để hỏi vị trí địa điểm."
+      },
+      {
+        type: "grammar",
+        context: "Làm quen — Hỏi quê quán",
+        question: "（　）から 来ましたか。― ベトナムから 来ました。",
+        hint: "Bạn đến từ đâu? - Tôi đến từ Việt Nam.",
+        options: ["どちら", "いくつ", "いくら", "なんじ"],
+        correctText: "どちら",
+        explanation: "「どちらから 来ましたか」 là mẫu câu chuẩn hỏi bạn đến từ đất nước/vùng nào."
+      },
+      {
+        type: "grammar",
+        context: "Tại nhà hàng — Thanh toán",
+        question: "すみません、（　）を お願いします。",
+        hint: "Xin lỗi, làm ơn tính tiền giúp tôi.",
+        options: ["おかいけい", "おたんじょうび", "おしごと", "おてあらい"],
+        correctText: "おかいけい",
+        explanation: "「お会計（おかいけい）を お願いします」 là câu gọi nhân viên tính tiền chuẩn xác."
+      },
+      {
+        type: "grammar",
+        context: "Trợ từ cơ bản — Nơi diễn ra hành động",
+        question: "毎日 図書館（　）日本語を 勉強します。",
+        hint: "Mỗi ngày tôi học tiếng Nhật ở thư viện.",
+        options: ["に", "へ", "で", "を"],
+        correctText: "で",
+        explanation: "Trợ từ 「で」 đứng sau địa điểm diễn ra hành động (học tập tại thư viện)."
+      },
+      {
+        type: "grammar",
+        context: "Trợ từ cơ bản — Phương hướng di chuyển",
+        question: "来週 京都（　）行きます。",
+        hint: "Tuần sau tôi sẽ đi Kyoto.",
+        options: ["を", "で", "へ", "が"],
+        correctText: "へ",
+        explanation: "Trợ từ 「へ」 (đọc là e) hoặc 「に」 dùng sau địa điểm với động từ di chuyển 「行きます」."
+      },
+      {
+        type: "grammar",
+        context: "Cấu trúc tồn tại — Đồ vật",
+        question: "机の 上に 本（　）あります。",
+        hint: "Ở trên bàn có quyển sách.",
+        options: ["を", "が", "に", "で"],
+        correctText: "が",
+        explanation: "Cấu trúc chỉ sự tồn tại: 「[Vật] が あります」."
+      },
+      {
+        type: "grammar",
+        context: "Hỏi thời điểm — Sinh nhật",
+        question: "お誕生日は（　）ですか。― 5月 10日です。",
+        hint: "Sinh nhật của bạn là khi nào? - Ngày 10 tháng 5.",
+        options: ["いつ", "どこ", "だれ", "いくら"],
+        correctText: "いつ",
+        explanation: "「いつ」 nghĩa là 'khi nào / bao giờ', dùng để hỏi mốc thời gian."
+      },
+      {
+        type: "grammar",
+        context: "Nhà hàng — Hỏi món đặc trưng",
+        question: "この店の（　）は 何ですか。",
+        hint: "Món ngon gợi ý/đặc trưng của quán này là gì?",
+        options: ["おすすめ", "おなまえ", "おてあらい", "おしごと"],
+        correctText: "おすすめ",
+        explanation: "「おすすめは 何ですか」 dùng để hỏi nhân viên gợi ý món ngon nhất của quán."
+      },
+      {
+        type: "grammar",
+        context: "Hỏi số lượng đồ vật",
+        question: "りんごを（　）買いましたか。― みっつ 買いました。",
+        hint: "Bạn đã mua mấy quả táo? - Tôi đã mua 3 quả.",
+        options: ["いくつ", "いくら", "なんじ", "なんがい"],
+        correctText: "いくつ",
+        explanation: "「いくつ」 dùng với bộ đếm chung 「ひとつ, ふたつ, みっつ...」 để hỏi số lượng."
+      },
+      {
+        type: "grammar",
+        context: "Cấu trúc tồn tại — Người và động vật",
+        question: "教室に 学生が 10人（　）。",
+        hint: "Trong lớp học có 10 học sinh.",
+        options: ["います", "あります", "します", "いきます"],
+        correctText: "います",
+        explanation: "Với người và động vật dùng 「います」; với đồ vật vô tri dùng 「あります」."
+      },
+      {
+        type: "grammar",
+        context: "Đọc biến âm số tầng đặc biệt",
+        question: "「3階」 đọc sang Hiragana thế nào cho đúng?",
+        hint: "Tầng 3 trong tiếng Nhật có biến âm đặc biệt.",
+        options: ["さんがい", "さんかい", "みっかい", "さんじ"],
+        correctText: "さんがい",
+        explanation: "Số 3 đi với 「階」 biến âm thành 「さんがい」 (tương tự 何階 đọc là なんがい)."
+      },
+      {
+        type: "grammar",
+        context: "Đọc biến âm số tầng 1",
+        question: "「1階」 đọc sang Hiragana thế nào cho đúng?",
+        hint: "Tầng 1 có âm ngắt (っ).",
+        options: ["いっかい", "いちかい", "いちがい", "ひとつかい"],
+        correctText: "いっかい",
+        explanation: "1階 đọc là 「いっかい」, 6階 là 「ろっかい」, 8階 là 「はっかい」."
+      }
+    ];
+
+    // ==================== DATA: IME SAMPLES ====================
+    const imeSamples = [
+      { label: "Order đồ ăn", jp: "ラーメンとぎょうざをください", romaji: "raamen to gyouza o kudasai", vi: "Cho tôi mì Ramen và bánh xếp Gyoza" },
+      { label: "Hỏi thành phần món ăn", jp: "このりょうりにぶたにくがはいっていますか", romaji: "kono ryouri ni butaniku ga haitte imasuka", vi: "Món này có thịt heo ở trong không?" },
+      { label: "Bỏ nguyên liệu", jp: "ねぎをぬきにしてください", romaji: "negi o nuki ni shite kudasai", vi: "Làm ơn bỏ hành lá ra giúp tôi" },
+      { label: "Tính tiền", jp: "すみません、おかいけいをおねがいします", romaji: "sumimasen, okaikei o onegaishimasu", vi: "Xin lỗi, làm ơn tính tiền giúp tôi" },
+      { label: "Hỏi giá tiền", jp: "すみません、これはいくらですか", romaji: "sumimasen, kore wa ikura desuka", vi: "Xin lỗi, cái này bao nhiêu tiền?" },
+      { label: "Hỏi tầng mấy", jp: "レストランはなんがいですか", romaji: "resutoran wa nangai desuka", vi: "Nhà hàng ở tầng mấy?" },
+      { label: "Hỏi vị trí", jp: "おてあらいはどこですか", romaji: "otearai wa doko desuka", vi: "Nhà vệ sinh ở đâu vậy?" },
+      { label: "Hỏi giờ giấc", jp: "いま、なんじですか", romaji: "ima, nanji desuka", vi: "Bây giờ là mấy giờ?" },
+      { label: "Hỏi thứ trong tuần", jp: "きょうはなんようびですか", romaji: "kyou wa nanyoubi desuka", vi: "Hôm nay là thứ mấy?" },
+      { label: "Giới thiệu tên", jp: "おなまえはなんですか", romaji: "onamae wa nan desuka", vi: "Tên của bạn là gì?" },
+      { label: "Hỏi tuổi lịch sự", jp: "おいくつですか", romaji: "oikutsu desuka", vi: "Bạn bao nhiêu tuổi?" },
+      { label: "Hỏi quê quán", jp: "どちらからきましたか", romaji: "dochira kara kimashitaka", vi: "Bạn đến từ đâu?" }
+    ];
+
+    // ==================== STATE ====================
+    let activeGrammarCat = "Tất cả";
+    let activeVocabCat = "Tất cả";
+    let vocabMode = "flashcard";
+    let currentCardIdx = 0;
+    let isFlipped = false;
+    let learnedIds = new Set(JSON.parse(localStorage.getItem("jp_learned") || "[]"));
+
+    let quizMode = "all"; // 'all' | 'grammar' | 'vocab'
+    let activeQuizSet = [];
+    let currentQuizIdx = 0;
+    let quizScore = 0;
+    let quizStreak = 0;
+    let quizAnswered = false;
+
+    let imeMode = "hiragana";
+
+    // ==================== UTILS ====================
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function speakText(text) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "ja-JP";
+      utter.rate = 0.92;
+      window.speechSynthesis.speak(utter);
+    }
+
+    // ==================== NAVIGATION ====================
+    function switchTab(tab) {
+      ["grammar", "vocab", "quiz", "ime"].forEach(t => {
+        document.getElementById(`section-${t}`).classList.toggle("hidden", t !== tab);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tab) {
+          btn.classList.add("tab-active");
+          btn.classList.remove("text-stone-600");
+        } else {
+          btn.classList.remove("tab-active");
+          btn.classList.add("text-stone-600");
+        }
+      });
+    }
+
+    // ==================== GRAMMAR LOGIC ====================
+    function initGrammar() {
+      const categories = ["Tất cả", ...new Set(grammarData.map(g => g.category))];
+      const pillsEl = document.getElementById("grammar-pills");
+      pillsEl.innerHTML = categories.map(cat => `
+        <button onclick="setGrammarCat('${cat}')" class="g-pill px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${cat === activeGrammarCat ? 'pill-active' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}">
+          ${cat}
+        </button>
+      `).join("");
+      renderGrammar();
+    }
+
+    function setGrammarCat(cat) {
+      activeGrammarCat = cat;
+      initGrammar();
+    }
+
+    function renderGrammar() {
+      const q = document.getElementById("grammar-search").value.toLowerCase().trim();
+      const filtered = grammarData.filter(item => {
+        const matchCat = activeGrammarCat === "Tất cả" || item.category === activeGrammarCat;
+        const matchSearch = !q ||
+          item.title.toLowerCase().includes(q) ||
+          item.formula.toLowerCase().includes(q) ||
+          item.meaning.toLowerCase().includes(q) ||
+          item.note.toLowerCase().includes(q) ||
+          item.examples.some(e => e.jp.toLowerCase().includes(q) || e.vi.toLowerCase().includes(q));
+        return matchCat && matchSearch;
+      });
+
+      const grid = document.getElementById("grammar-grid");
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-400 text-sm">Không tìm thấy công thức phù hợp với từ khóa của bạn.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <article class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-[#E63946]">${item.category}</span>
+              <span class="text-xs font-semibold text-stone-400">JLPT </span>
+            </div>
+            <h3 class="text-base font-bold text-[#1D3557]">${item.title}</h3>
+            <div class="bg-[#F4F1EA] px-3.5 py-2.5 rounded-xl border-l-4 border-[#E63946] font-bold text-[#1D3557] jp-font text-sm">
+              ${item.formula}
+            </div>
+            <p class="text-sm font-medium text-stone-700">👉 <span class="text-[#E63946] font-semibold">Ý nghĩa:</span> ${item.meaning}</p>
+            <p class="text-xs text-stone-500 leading-relaxed">💡 ${item.note}</p>
+          </div>
+
+          <div class="border-t border-stone-100 pt-3 space-y-2">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-stone-400">Ví dụ thực tế</div>
+            ${item.examples.map(ex => `
+              <div class="bg-stone-50 p-2.5 rounded-xl flex items-start justify-between gap-2">
+                <div class="space-y-0.5">
+                  <div class="text-sm font-bold text-[#1D3557] jp-font">${ex.jp}</div>
+                  <div class="text-[11px] font-mono text-stone-400">${ex.romaji}</div>
+                  <div class="text-xs text-stone-600">${ex.vi}</div>
+                </div>
+                <button onclick="speakText('${ex.jp.replace(/'/g, "\'")}')" class="shrink-0 w-8 h-8 rounded-lg bg-white border border-stone-200 hover:border-[#E63946] text-[#E63946] flex items-center justify-center text-xs transition cursor-pointer" title="Nghe phát âm">
+                  🔊
+                </button>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+      `).join("");
+    }
+
+    // ==================== VOCABULARY LOGIC ====================
+    function getFilteredVocab() {
+      const q = document.getElementById("vocab-search").value.toLowerCase().trim();
+      return vocabData.filter(v => {
+        const matchCat = activeVocabCat === "Tất cả" || v.category === activeVocabCat;
+        const matchQ = !q ||
+          v.kanji.toLowerCase().includes(q) ||
+          v.kana.toLowerCase().includes(q) ||
+          v.romaji.toLowerCase().includes(q) ||
+          v.meaning.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+    }
+
+    function initVocab() {
+      const categories = ["Tất cả", ...new Set(vocabData.map(v => v.category))];
+      document.getElementById("vocab-pills").innerHTML = categories.map(cat => `
+        <button onclick="setVocabCat('${cat}')" class="px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${cat === activeVocabCat ? 'pill-active' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}">
+          ${cat}
+        </button>
+      `).join("");
+      updateVocabProgress();
+      renderVocab();
+    }
+
+    function setVocabCat(cat) {
+      activeVocabCat = cat;
+      currentCardIdx = 0;
+      isFlipped = false;
+      initVocab();
+    }
+
+    function setVocabMode(mode) {
+      vocabMode = mode;
+      document.getElementById("vocab-flashcard-view").classList.toggle("hidden", mode !== "flashcard");
+      document.getElementById("vocab-list-view").classList.toggle("hidden", mode !== "list");
+
+      const btnFc = document.getElementById("btn-mode-flashcard");
+      const btnList = document.getElementById("btn-mode-list");
+      if (mode === "flashcard") {
+        btnFc.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1D3557] text-white transition cursor-pointer";
+        btnList.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 transition cursor-pointer";
+      } else {
+        btnList.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1D3557] text-white transition cursor-pointer";
+        btnFc.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 transition cursor-pointer";
+      }
+      renderVocab();
+    }
+
+    function updateVocabProgress() {
+      const total = vocabData.length;
+      const count = learnedIds.size;
+      const pct = Math.round((count / total) * 100);
+      document.getElementById("vocab-progress-text").textContent = `${count} / ${total} từ (${pct}%)`;
+      document.getElementById("vocab-progress-bar").style.width = `${pct}%`;
+    }
+
+    function renderVocab() {
+      const list = getFilteredVocab();
+
+      if (list.length === 0) {
+        document.getElementById("fc-kanji").textContent = "Không có từ";
+        document.getElementById("fc-kana").textContent = "";
+        document.getElementById("fc-counter").textContent = "0 / 0";
+      } else {
+        if (currentCardIdx >= list.length) currentCardIdx = 0;
+        const card = list[currentCardIdx];
+        document.getElementById("flashcard-inner").classList.toggle("rotate-y-180", isFlipped);
+        document.getElementById("fc-category").textContent = card.category;
+        document.getElementById("fc-kanji").textContent = card.kanji;
+        document.getElementById("fc-kana").textContent = card.kana;
+        document.getElementById("fc-romaji").textContent = card.romaji;
+        document.getElementById("fc-meaning").textContent = card.meaning;
+        document.getElementById("fc-ex-jp").textContent = card.exJp;
+        document.getElementById("fc-ex-vi").textContent = card.exVi;
+        document.getElementById("fc-counter").textContent = `Thẻ ${currentCardIdx + 1} / ${list.length}`;
+
+        const btnLearned = document.getElementById("btn-mark-learned");
+        if (learnedIds.has(card.id)) {
+          btnLearned.textContent = "★ Đã thuộc từ này";
+          btnLearned.className = "px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold shadow-sm transition cursor-pointer";
+        } else {
+          btnLearned.textContent = "✓ Đánh dấu đã thuộc";
+          btnLearned.className = "px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow-sm transition cursor-pointer";
+        }
+      }
+
+      document.getElementById("vocab-list-view").innerHTML = list.map(v => {
+        const isDone = learnedIds.has(v.id);
+        return `
+          <div class="bg-white p-4 rounded-2xl border ${isDone ? 'border-emerald-300 bg-emerald-50/30' : 'border-stone-200'} shadow-sm flex flex-col justify-between space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-semibold text-stone-400">${v.category}</span>
+                <div class="text-xl font-bold text-[#1D3557] jp-font">${v.kanji}</div>
+                <div class="text-xs text-stone-500 jp-font">${v.kana} (${v.romaji})</div>
+              </div>
+              <div class="flex gap-1.5">
+                <button onclick="speakText('${v.kana}')" class="w-8 h-8 rounded-lg bg-stone-100 hover:bg-red-50 text-[#E63946] flex items-center justify-center text-xs cursor-pointer" title="Nghe từ">🔊</button>
+                <button onclick="toggleLearnedById(${v.id})" class="w-8 h-8 rounded-lg ${isDone ? 'bg-emerald-600 text-white' : 'bg-stone-100 text-stone-400 hover:text-emerald-600'} flex items-center justify-center text-xs cursor-pointer" title="Đánh dấu đã thuộc">✓</button>
+              </div>
+            </div>
+            <div class="text-sm font-bold text-[#E63946]">${v.meaning}</div>
+            <div class="bg-stone-50 p-2 rounded-lg text-xs space-y-0.5">
+              <div class="jp-font text-stone-800 font-medium">${v.exJp}</div>
+              <div class="text-stone-500">${v.exVi}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function flipCard() {
+      isFlipped = !isFlipped;
+      document.getElementById("flashcard-inner").classList.toggle("rotate-y-180", isFlipped);
+    }
+
+    function nextCard() {
+      const list = getFilteredVocab();
+      if (!list.length) return;
+      isFlipped = false;
+      currentCardIdx = (currentCardIdx + 1) % list.length;
+      renderVocab();
+    }
+
+    function prevCard() {
+      const list = getFilteredVocab();
+      if (!list.length) return;
+      isFlipped = false;
+      currentCardIdx = (currentCardIdx - 1 + list.length) % list.length;
+      renderVocab();
+    }
+
+    function speakCurrentVocab() {
+      const list = getFilteredVocab();
+      if (list[currentCardIdx]) speakText(list[currentCardIdx].kana);
+    }
+
+    function speakCurrentExample() {
+      const list = getFilteredVocab();
+      if (list[currentCardIdx]) speakText(list[currentCardIdx].exJp);
+    }
+
+    function toggleLearnedCurrent() {
+      const list = getFilteredVocab();
+      if (!list[currentCardIdx]) return;
+      toggleLearnedById(list[currentCardIdx].id);
+    }
+
+    function toggleLearnedById(id) {
+      if (learnedIds.has(id)) {
+        learnedIds.delete(id);
+      } else {
+        learnedIds.add(id);
+      }
+      localStorage.setItem("jp_learned", JSON.stringify([...learnedIds]));
+      updateVocabProgress();
+      renderVocab();
+    }
+
+    // ==================== DYNAMIC RANDOM QUIZ ENGINE ====================
+    function buildDynamicVocabQuestions() {
+      const generated = [];
+      vocabData.forEach(item => {
+        const distractors = shuffleArray(vocabData.filter(v => v.id !== item.id)).slice(0, 3);
+
+        // Dạng 1: Nhật -> Việt
+        const optsVi = shuffleArray([item.meaning, ...distractors.map(d => d.meaning)]);
+        generated.push({
+          type: "vocab",
+          audioText: item.kana,
+          context: `Từ vựng (${item.category}) — Chọn nghĩa tiếng Việt đúng`,
+          question: `${item.kanji} （${item.kana}）`,
+          hint: `Phiên âm: ${item.romaji}`,
+          options: optsVi,
+          correct: optsVi.indexOf(item.meaning),
+          fullSentence: `${item.kanji}（${item.kana}） = ${item.meaning}`,
+          explanation: `Ví dụ: ${item.exJp} (${item.exVi})`
+        });
+
+        // Dạng 2: Việt -> Nhật
+        const optsJp = shuffleArray([`${item.kanji} (${item.kana})`, ...distractors.map(d => `${d.kanji} (${d.kana})`)]);
+        generated.push({
+          type: "vocab",
+          audioText: item.kana,
+          context: `Từ vựng (${item.category}) — Chọn từ tiếng Nhật tương ứng`,
+          question: `Nghĩa tiếng Việt: "${item.meaning}"`,
+          hint: `Chọn cách viết tiếng Nhật chính xác`,
+          options: optsJp,
+          correct: optsJp.indexOf(`${item.kanji} (${item.kana})`),
+          fullSentence: `${item.kanji}（${item.kana}）`,
+          explanation: `Ví dụ: ${item.exJp} (${item.exVi})`
+        });
+      });
+      return generated;
+    }
+
+    function buildDynamicScenarioQuestions() {
+      const foods = [
+        { jp: "豚肉", kana: "ぶたにく", vi: "thịt heo" },
+        { jp: "牛肉", kana: "ぎゅうにく", vi: "thịt bò" },
+        { jp: "鶏肉", kana: "とりにく", vi: "thịt gà" },
+        { jp: "海老", kana: "えび", vi: "tôm" },
+        { jp: "卵", kana: "たまご", vi: "trứng" }
+      ];
+      const floors = [
+        { num: "1階", read: "いっかい", vi: "tầng 1" },
+        { num: "2階", read: "にかい", vi: "tầng 2" },
+        { num: "3階", read: "さんがい", vi: "tầng 3" },
+        { num: "4階", read: "よんかい", vi: "tầng 4" },
+        { num: "6階", read: "ろっかい", vi: "tầng 6" },
+        { num: "8階", read: "はっかい", vi: "tầng 8" }
+      ];
+      const days = [
+        { jp: "月曜日", read: "げつようび", vi: "Thứ Hai" },
+        { jp: "火曜日", read: "かようび", vi: "Thứ Ba" },
+        { jp: "水曜日", read: "すいようび", vi: "Thứ Tư" },
+        { jp: "木曜日", read: "もくようび", vi: "Thứ Năm" },
+        { jp: "金曜日", read: "きんようび", vi: "Thứ Sáu" },
+        { jp: "土曜日", read: "どようび", vi: "Thứ Bảy" },
+        { jp: "日曜日", read: "にちようび", vi: "Chủ Nhật" }
+      ];
+
+      const scenarios = [];
+
+      // Sinh câu hỏi dị ứng nguyên liệu ngẫu nhiên
+      foods.forEach(f => {
+        const opts = shuffleArray(["に", "を", "で", "へ"]);
+        scenarios.push({
+          type: "grammar",
+          context: "Tình huống nhà hàng — Hỏi thành phần món ăn",
+          question: `この料理（　）${f.jp}（${f.kana}）が 入っていますか。`,
+          hint: `Món ăn này có chứa ${f.vi} ở trong không?`,
+          options: opts,
+          correct: opts.indexOf("に"),
+          explanation: `Cấu trúc hỏi thành phần: 「この料理に [${f.jp}] が 入っていますか」.`
+        });
+      });
+
+      // Sinh câu hỏi tầng lầu ngẫu nhiên
+      floors.forEach(fl => {
+        const otherReads = shuffleArray(floors.filter(x => x.num !== fl.num).map(x => x.read)).slice(0, 3);
+        const opts = shuffleArray([fl.read, ...otherReads]);
+        scenarios.push({
+          type: "grammar",
+          context: "Hỏi đường trong tòa nhà — Đọc số tầng",
+          question: `レストランは 「${fl.num}」 です。Cách đọc đúng là gì?`,
+          hint: `Nhà hàng ở ${fl.vi}.`,
+          options: opts,
+          correct: opts.indexOf(fl.read),
+          fullSentence: `レストランは ${fl.read} です。`,
+          explanation: `「${fl.num}」 đọc chuẩn là 「${fl.read}」.`
+        });
+      });
+
+      // Sinh câu hỏi thứ trong tuần ngẫu nhiên
+      days.forEach(d => {
+        const otherDays = shuffleArray(days.filter(x => x.jp !== d.jp).map(x => x.vi)).slice(0, 3);
+        const opts = shuffleArray([d.vi, ...otherDays]);
+        scenarios.push({
+          type: "grammar",
+          context: "Thời gian — Hỏi thứ trong tuần",
+          question: `今日は ${d.jp}（${d.read}）です。`,
+          hint: `Hôm nay là thứ mấy?`,
+          options: opts,
+          correct: opts.indexOf(d.vi),
+          fullSentence: `今日は ${d.jp} です。`,
+          explanation: `「${d.jp}（${d.read}）」 nghĩa là ${d.vi}.`
+        });
+      });
+
+      return scenarios;
+    }
+
+    function setQuizMode(mode) {
+      quizMode = mode;
+      ["all", "grammar", "vocab"].forEach(m => {
+        const btn = document.getElementById(`qmode-${m}`);
+        if (m === mode) {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1D3557] text-white transition cursor-pointer";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 hover:bg-stone-200 transition cursor-pointer";
+        }
+      });
+      generateNewQuizSet();
+    }
+
+    function generateNewQuizSet() {
+      // Chuẩn hóa baseGrammarQuiz kèm xáo trộn 4 đáp án
+      const normalizedGrammar = baseGrammarQuiz.map(q => {
+        const shuffledOpts = shuffleArray(q.options);
+        return {
+          ...q,
+          options: shuffledOpts,
+          correct: shuffledOpts.indexOf(q.correctText)
+        };
+      });
+
+      const dynamicScenarios = buildDynamicScenarioQuestions();
+      const dynamicVocab = buildDynamicVocabQuestions();
+
+      let pool = [];
+      if (quizMode === "grammar") {
+        pool = [...normalizedGrammar, ...dynamicScenarios];
+      } else if (quizMode === "vocab") {
+        pool = [...dynamicVocab];
+      } else {
+        pool = [...normalizedGrammar, ...dynamicScenarios, ...dynamicVocab];
+      }
+
+      // Bốc ngẫu nhiên 15 câu mỗi lượt
+      activeQuizSet = shuffleArray(pool).slice(0, 15);
+      currentQuizIdx = 0;
+      quizScore = 0;
+      quizStreak = 0;
+      document.getElementById("quiz-score").textContent = 0;
+      document.getElementById("quiz-streak").textContent = "🔥 0";
+      renderQuiz();
+    }
+
+    function renderQuiz() {
+      const q = activeQuizSet[currentQuizIdx];
+      quizAnswered = false;
+      document.getElementById("quiz-progress").textContent = `Câu hỏi ${currentQuizIdx + 1} / ${activeQuizSet.length}`;
+      document.getElementById("quiz-context").textContent = `📌 ${q.context}`;
+      document.getElementById("quiz-question").textContent = q.question;
+      document.getElementById("quiz-hint").textContent = q.hint;
+      document.getElementById("quiz-feedback").classList.add("hidden");
+      document.getElementById("btn-next-quiz").classList.add("hidden");
+
+      const speakBtn = document.getElementById("btn-speak-quiz");
+      if (q.audioText) {
+        speakBtn.classList.remove("hidden");
+      } else {
+        speakBtn.classList.add("hidden");
+      }
+
+      document.getElementById("quiz-options").innerHTML = q.options.map((opt, idx) => `
+        <button onclick="selectQuizOption(${idx})" id="q-opt-${idx}" class="p-3.5 rounded-xl border-2 border-stone-200 hover:border-[#1D3557] text-left font-bold text-base jp-font text-[#1D3557] transition cursor-pointer">
+          ${String.fromCharCode(65 + idx)}. ${opt}
+        </button>
+      `).join("");
+    }
+
+    function speakQuizPrompt() {
+      const q = activeQuizSet[currentQuizIdx];
+      if (q && q.audioText) speakText(q.audioText);
+    }
+
+    function selectQuizOption(idx) {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const q = activeQuizSet[currentQuizIdx];
+      const isCorrect = idx === q.correct;
+
+      if (isCorrect) {
+        quizScore += 10;
+        quizStreak += 1;
+      } else {
+        quizStreak = 0;
+      }
+
+      document.getElementById("quiz-score").textContent = quizScore;
+      document.getElementById("quiz-streak").textContent = `🔥 ${quizStreak}`;
+
+      q.options.forEach((_, i) => {
+        const btn = document.getElementById(`q-opt-${i}`);
+        btn.disabled = true;
+        if (i === q.correct) {
+          btn.className = "p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-left font-bold text-base jp-font text-emerald-800";
+        } else if (i === idx && !isCorrect) {
+          btn.className = "p-3.5 rounded-xl border-2 border-red-500 bg-red-50 text-left font-bold text-base jp-font text-red-800";
+        }
+      });
+
+      const completed = q.fullSentence || q.question.replace("（　）", q.options[q.correct]);
+      speakText(q.audioText || completed);
+
+      const fb = document.getElementById("quiz-feedback");
+      fb.classList.remove("hidden");
+      fb.className = `p-4 rounded-xl text-sm space-y-1.5 ${isCorrect ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-red-50 text-red-900 border border-red-200'}`;
+      fb.innerHTML = `
+        <div class="font-bold">${isCorrect ? '🎉 Chính xác!' : '❌ Chưa chính xác rồi!'}</div>
+        <div class="jp-font font-semibold text-[#1D3557]">Đáp án chuẩn: ${completed}</div>
+        <div>${q.explanation}</div>
+      `;
+
+      const nextBtn = document.getElementById("btn-next-quiz");
+      nextBtn.classList.remove("hidden");
+      nextBtn.textContent = currentQuizIdx < activeQuizSet.length - 1 ? "Câu tiếp theo →" : "🔀 Tạo bộ 15 câu mới";
+    }
+
+    function nextQuiz() {
+      if (currentQuizIdx < activeQuizSet.length - 1) {
+        currentQuizIdx++;
+        renderQuiz();
+      } else {
+        generateNewQuizSet();
+      }
+    }
+
+    // ==================== IME LOGIC ====================
+    function initIme() {
+      const sel = document.getElementById("ime-sample-select");
+      sel.innerHTML = imeSamples.map((s, idx) => `<option value="${idx}">${idx + 1}. ${s.label}</option>`).join("");
+      updateImeSample();
+
+      const input = document.getElementById("ime-input");
+      wanakana.bind(input, { IMEMode: "toHiragana" });
+    }
+
+    function setImeMode(mode) {
+      imeMode = mode;
+      const input = document.getElementById("ime-input");
+      wanakana.unbind(input);
+      wanakana.bind(input, { IMEMode: mode === "hiragana" ? "toHiragana" : "toKatakana" });
+
+      const btnHira = document.getElementById("ime-hira");
+      const btnKata = document.getElementById("ime-kata");
+      if (mode === "hiragana") {
+        btnHira.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#E63946] text-white transition cursor-pointer";
+        btnKata.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 transition cursor-pointer";
+      } else {
+        btnKata.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#E63946] text-white transition cursor-pointer";
+        btnHira.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-600 transition cursor-pointer";
+      }
+    }
+
+    function updateImeSample() {
+      const idx = document.getElementById("ime-sample-select").value;
+      const s = imeSamples[idx];
+      document.getElementById("sample-jp").textContent = s.jp;
+      document.getElementById("sample-romaji").textContent = `Romaji: ${s.romaji}`;
+      document.getElementById("sample-vi").textContent = `Nghĩa: ${s.vi}`;
+    }
+
+    function speakImeInput() {
+      const val = document.getElementById("ime-input").value.trim();
+      if (val) speakText(val);
+    }
+
+    function copyImeInput() {
+      const input = document.getElementById("ime-input");
+      input.select();
+      navigator.clipboard.writeText(input.value);
+    }
+
+    function clearImeInput() {
+      document.getElementById("ime-input").value = "";
+      document.getElementById("ime-input").focus();
+    }
+
+    // ==================== BOOTSTRAP ====================
+    initGrammar();
+    initVocab();
+    generateNewQuizSet();
+    initIme();
+  </script>
+</body>
+</html>
